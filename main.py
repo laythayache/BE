@@ -1,3 +1,7 @@
+'''disclaimer: the comments were written by chatgpt for ease of readability'''
+
+
+
 import cv2
 import numpy as np
 import mediapipe as mp
