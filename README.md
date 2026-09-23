@@ -1,84 +1,60 @@
+# Multi-Model Sign Recognition Prototype
 
-# Sign Language & ASL Recognition System
+This repository is a historical OmniSign engineering artifact that combines two
+specialized recognition paths in one live webcam loop:
 
-This project provides a real-time sign language and American Sign Language (ASL) recognition system using a combination of TensorFlow, PyTorch, and MediaPipe for hand landmark and holistic pose detection. It utilizes a custom LSTM model for sequence-based predictions and a hand landmark classifier for recognizing individual ASL signs.
+- a TensorFlow LSTM model for three bounded ASL expression sequences
+  (`hello`, `thanks`, and `iloveyou`); and
+- a PyTorch hand-landmark classifier for the ASL alphabet plus `space`,
+  `delete`, and `nothing`.
 
-## Features
+MediaPipe supplies face, pose, and hand landmarks. The prototype displays each
+model's prediction and an observed frames-per-second counter.
 
-- **TensorFlow Model**: Recognizes sequences of sign language gestures using a custom LSTM.
-- **PyTorch Model**: Classifies individual hand landmarks into ASL alphabets and commands.
-- **MediaPipe Integration**: Detects and processes face, pose, and hand landmarks.
-- **Real-time Webcam Input**: Uses a webcam to capture gestures and make predictions.
-- **Confidence Threshold**: Only accepts predictions above a certain confidence threshold.
+## What this demonstrates
 
-## Requirements
+- Live camera capture and landmark extraction
+- Thirty-frame sequence input for the LSTM path
+- Isolated-sign classification from 63 hand-landmark values
+- Routing two model families through one interaction loop
+- Confidence-based suppression for the isolated-sign classifier
 
-- Python 3.x
-- TensorFlow (2.x)
-- PyTorch
-- OpenCV
-- MediaPipe
-- NumPy
+The configured `0.7` value is an inference confidence threshold, not an
+accuracy measurement.
 
-To install the required dependencies, run:
+## What this does not demonstrate
 
-bash
-pip install tensorflow torch opencv-python mediapipe numpy
+This repository is not the complete OmniSign platform or the
+community-collected Lebanese Sign Language dataset. It does not implement
+unrestricted continuous translation, broad clinical vocabulary, validated
+multilingual output, or a documented production deployment. It also contains
+no retained benchmark report supporting a general accuracy or latency claim.
 
+The committed model files are research artifacts. Their presence does not make
+the repository a reproducible evaluation package: dependency versions,
+training logs, model cards, dataset lineage, and environment-specific benchmark
+results are not fully recorded here.
 
-## Setup Instructions
-# Prepare the models:
+## Run the historical prototype
 
---**Download** the TensorFlow model (action.h5) for gesture sequence prediction.
---**Download** the PyTorch model (asl_landmark_model.pth) for hand landmark classification.
---**Running the application:** After setting up the models and installing the dependencies, run the script:
+Use an isolated Python environment with TensorFlow, PyTorch, OpenCV, MediaPipe,
+and NumPy, then run:
 
 ```bash
-python sign_language_recognition.py
+python main.py
 ```
 
-# The system will use your webcam to detect gestures in real-time, predict sign language sequences, and identify individual ASL gestures using hand landmarks.
+A webcam is required. Compatibility depends on the TensorFlow/Keras versions
+used to load the historical `action.h5` model.
 
-# Workflow
-*Frame Capture:* Captures video frames from the webcam.
-*Pose and Hand Landmark Detection:* Uses MediaPipe to detect body, face, and hand landmarks.
-**Gesture Recognition:**
-*TensorFlow Model:* Recognizes sequences of hand gestures (e.g., "hello", "thanks", "iloveyou").
-*PyTorch Model:* Classifies hand landmarks into ASL alphabet letters and commands (e.g., 'A', 'B', 'C', 'space', 'del').
-*Real-time Prediction:* Displays the predicted gesture or sign on the screen, along with confidence scores.
-*FPS Display:* Shows the current frames per second (FPS) for performance monitoring.
+## Related public artifacts
 
+- [ASL alphabet preprocessing and training baseline](https://github.com/laythayache/Training-the-ASL-dataset)
+- [OmniSign dataset-collection prototype](https://github.com/laythayache/dataset-collector)
+- [Canonical OmniSign case study](https://laythayache.com/projects/omnisign/)
+- [Rafik Hariri University award announcement](https://www.rhu.edu.lb/media-room/news/rhu-team-wins-public-choice-award-at-national-fyp-demo-day-2025)
 
-Explanation of Key Components
-1. Custom LSTM in TensorFlow
-The TensorFlow model uses a custom LSTM layer to handle sequence-based predictions. The CustomLSTM class removes the unsupported time_major argument during model loading.
+## License
 
-2. Hand Landmark Classifier in PyTorch
-The PyTorch model classifies individual hand landmarks into 29 ASL symbols. The landmarks are processed by the model to provide predictions, with a threshold of 70% confidence to accept the classification.
-
-3. MediaPipe for Hand and Pose Detection
-MediaPipe is used to extract key points from the body, face, and hands, which are passed into the TensorFlow and PyTorch models for recognition.
-
-4. Frame Processing & Prediction Display
-The system processes each frame from the webcam, detects landmarks, and makes predictions for gesture sequences and hand landmarks. The predicted labels and confidence are displayed on the screen.
-
-Example Outputs
-TensorFlow Model Prediction:
-Displayed as "Seq: [Gesture Name] ([Confidence])"
-Example: "Seq: HELLO (0.95)"
-PyTorch Model Prediction:
-Displayed as "Hand: [Sign] ([Confidence])"
-Example: "Hand: A (0.85)"
-Key Settings
-Confidence Threshold for PyTorch Model: The system uses a confidence threshold (CONFIDENCE_THRESHOLD = 0.7) for hand landmark classification.
-Sequence Length for TensorFlow Model: The system analyzes 30 frames at a time for gesture sequence prediction.
-Troubleshooting
-If the webcam isn't opening, ensure that the webcam is properly connected and no other application is using it.
-If predictions are not accurate, consider training the models with more data or fine-tuning the existing models.
-Ensure that the model paths (action.h5 and asl_landmark_model.pth) are correctly specified.
-
-
-### **Note**: some issues are still present, in the future i will retrain all the models under the same architecture, or maybe find an nlp solution, hope you enjoy it, there is another repo where i explain how i trained the dataset step by step. 
-
-
-enjoy :)
+No license file is currently included. Public availability does not by itself
+grant permission to reuse the code, model weights, or other repository content.
